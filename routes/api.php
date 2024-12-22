@@ -17,3 +17,4 @@ Route::post('/login', [AuthController::class, 'login']);
 
 
 Route::get('/profile/{id}', [ProfileController::class, 'getProfile']);
+Route::put('/profile_update/{id}', [ProfileController::class, 'updateProfile']);
