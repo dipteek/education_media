@@ -12,7 +12,12 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::with('user')->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'posts' => $posts,
+        ]);
     }
 
     /**
@@ -28,7 +33,24 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'caption' => 'nullable|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $imagePath = $request->file('image')->store('post_images', 'public');
+
+        $post = Post::create([
+            'user_id' => $request->user_id,
+            'caption' => $request->caption,
+            'image_path' => $imagePath,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Post created successfully',
+            'post' => $post,
+        ]);
     }
 
     /**
