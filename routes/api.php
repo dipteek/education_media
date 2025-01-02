@@ -25,6 +25,6 @@ Route::get('/profile-fetch/{id}', [ProfileController::class, 'getProfileforEdit'
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/profile-update/{id}', [ProfileController::class, 'updateProfile']);
-    Route::post('/posts', [PostController::class, 'store']);
+    Route::post('/postsp', [PostController::class, 'store']);
     Route::get('/posts', [PostController::class, 'index']);
 });
