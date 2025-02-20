@@ -1,5 +1,5 @@
 <?php
-
+// http://172.17.11.156:8000/api/profile/2
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -28,6 +28,7 @@ class AuthController extends Controller
         $user->password = bcrypt($request->password);
         $user->age = $request->age;
         $user->education_type = $request->education_type;
+        $user->username = $request->username;
 
         if ($request->hasFile('profile_image')) {
             $user->profile_image = $request->file('profile_image')->store('profile_images', 'public');

@@ -33,6 +33,7 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        //dd("hii");
         //dd($request);
         $request->validate([
             'caption' => 'nullable|string|max:255',
@@ -49,15 +50,14 @@ class PostController extends Controller
         ]);
 
         
-
         return response()->json([
             'success' => true,
             'message' => 'Post created successfully',
             'post' => $post,
         ]);
 
-        /*return response()->json(['success' => false,
-        'aaaa' => $post], 302);*/
+        return response()->json(['success' => false,
+        'aaaa' => $post], 405);
     }
 
     /**
