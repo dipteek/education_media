@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use  Illuminate\Support\Facades\Log;
 
 class PostController extends Controller
 {
@@ -31,7 +32,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    /*public function store(Request $request)
     {
         //dd("hii");
         //dd($request);
@@ -58,7 +59,52 @@ class PostController extends Controller
 
         return response()->json(['success' => false,
         'aaaa' => $post], 405);
+    }*/
+
+    public function store(Request $request)
+{
+    $request->validate([
+        'caption' => 'nullable|string|max:255',
+        'file' => 'required|file|mimes:jpeg,png,jpg,mp4,pdf|max:90480',
+    ]);
+
+    if (!$request->hasFile('file')) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No file was uploaded',
+        ], 400);
     }
+
+    $filePath = $request->file('file')->store('uploads', 'public');
+
+    if (!$filePath) {
+        return response()->json([
+            'success' => false,
+            'message' => 'File upload failed',
+        ], 500);
+    }
+
+    $post = Post::create([
+        'user_id' => $request->user_id,
+        'caption' => $request->caption,
+        'file_path' => $filePath,
+    ]);
+
+    //Log::info('🔹 Received Request: ', $request->all());
+    return response()->json([
+        'success' => true,
+        'message' => 'File uploaded successfully',
+        'post' => $post,
+    ]);
+    /*
+    return response()->json([
+        'success' => true,
+        'message' => 'File uploaded successfully',
+        'post' => $post,
+    ], 201); */
+}
+
+
 
     /**
      * Display the specified resource.
