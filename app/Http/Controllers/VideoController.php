@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class VideoController extends Controller {
+    
     public function store(Request $request) {
         $request->validate([
             'course_id' => 'required|exists:courses,id',
@@ -38,10 +39,12 @@ class VideoController extends Controller {
 
         //->with('user')
     }
+
   /*  public function index() {
         dd("ff");
         
 
         //->with('user')
     }*/
+
 }

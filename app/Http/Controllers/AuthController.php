@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+
 class AuthController extends Controller
 {
     public function register(Request $request)
@@ -98,6 +100,99 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
         ],
     ]);
+}
+
+
+
+public function getUserProfileById($userId)
+{
+    $user = User::findOrFail($userId);
+    
+    $isFollowing = false;
+    $authUser = Auth::user();
+    
+    if ($authUser) {
+        // Check if the authenticated user is following this user
+        $isFollowing = DB::table('followers')
+            ->where('follower_id', $authUser->id)
+            ->where('user_id', $user->id)
+            ->exists();
+    }
+    
+    $followersCount = DB::table('followers')
+        ->where('user_id', $user->id)
+        ->count();
+    
+    $followingCount = DB::table('followers')
+        ->where('follower_id', $user->id)
+        ->count();
+    
+    return response()->json([
+        'success' => true,
+        'user' => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'username' => $user->username,
+            'email' => $user->email,
+            'bio' => $user->bio,
+            'gender' => $user->gender,
+            'age' => $user->age,
+            'education' => $user->education,
+            'image' => $user->image,
+            'followers_count' => $followersCount,
+            'following_count' => $followingCount,
+            'is_following' => $isFollowing
+        ]
+    ]);
+}
+
+
+
+
+public function followUser($userId)
+{
+    $authUser = Auth::user();
+    
+    if ($authUser->id == $userId) {
+        return response()->json([
+            'success' => false,
+            'message' => 'You cannot follow yourself'
+        ], 400);
+    }
+    
+    $userToFollow = User::findOrFail($userId);
+    
+    if (!$authUser->following->contains($userId)) {
+        $authUser->following()->attach($userId);
+        return response()->json([
+            'success' => true,
+            'message' => 'You are now following ' . $userToFollow->username
+        ]);
+    }
+    
+    return response()->json([
+        'success' => false,
+        'message' => 'You are already following this user'
+    ], 400);
+}
+
+public function unfollowUser($userId)
+{
+    $authUser = Auth::user();
+    $userToUnfollow = User::findOrFail($userId);
+    
+    if ($authUser->following->contains($userId)) {
+        $authUser->following()->detach($userId);
+        return response()->json([
+            'success' => true,
+            'message' => 'You have unfollowed ' . $userToUnfollow->username
+        ]);
+    }
+    
+    return response()->json([
+        'success' => false,
+        'message' => 'You are not following this user'
+    ], 400);
 }
 
 

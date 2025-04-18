@@ -39,9 +39,17 @@ Route::middleware('auth:sanctum')->group(function () {
     
 
     Route::post('/videos', [VideoController::class, 'store']);
+    Route::post('/posts/{post}/like', [PostController::class, 'toggleLike']);
+
+    
+    Route::get('/users/{userId}', [AuthController::class, 'getUserProfileById']);
+    Route::post('/users/{userId}/follow', [AuthController::class, 'followUser']);
+    Route::post('/users/{userId}/unfollow', [AuthController::class, 'unfollowUser']);
     
 
     
 });
-
+Route::get('posts/{post}/like-status', [PostController::class, 'getLikeStatus'])->middleware('auth:api');
 Route::get('/youtube', [YouTubeVideo::class, 'getEducationalVideos']);
+
+Route::get('/posts', [PostController::class, 'getPosts']);

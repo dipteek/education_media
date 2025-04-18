@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Log;
 
 class YouTubeService extends Controller
 {
-    protected $apiKey;
+    protected $apiKey="AIzaSyA0UZBcsqJ5EPyp0ZN54HfuOErgjUHTMr0";
 
-    public function __construct()
+    /*public function __construct()
     {
         $this->apiKey = env('YOUTUBE_API_KEY');
-    }
+    }*/
 
 /*public function getEducationalVideos($query = '', $maxResults = 1)
     {
@@ -47,7 +47,7 @@ public function getEducationalVideos($query = '', $maxResults = 10)
 {
     $response = Http::get('https://www.googleapis.com/youtube/v3/search', [
         'part' => 'snippet',
-        'q' => $query . ' education', // Append 'education' to the query
+        'q' => $query . ' education java', // Append 'education' to the query
         'type' => 'video',
         'videoCategoryId' => 27, // Education category
         'maxResults' => $maxResults,
@@ -59,7 +59,7 @@ public function getEducationalVideos($query = '', $maxResults = 10)
     $videos = $response->json();
 
     // Debugging: Print the full API response
-    Log::info('YouTube API Response: ' . json_encode($videos));
+    //Log::info('YouTube API Response: ' . json_encode($videos));
 
     if (!isset($videos['items'])) {
         return []; // If no items found, return empty array
